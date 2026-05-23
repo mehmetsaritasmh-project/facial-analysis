@@ -38,3 +38,4 @@ sequenceDiagram
     end
 
     JavaAPI-->>Kullanıcı: HTTP 200 OK (Generic ApiResponse)
+    ```
