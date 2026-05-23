@@ -24,7 +24,7 @@ sequenceDiagram
     participant JavaAPI as ☕ Java Spring Boot API
     participant PythonAI as 🐍 Python FastAPI (MediaPipe)
     participant MongoDB as 🍃 NoSQL (MongoDB Atlas)
-    database H2 as 💾 JDBC (H2 Database)
+    participant H2 as 💾 JDBC (H2 Database)
 
     Kullanıcı->>JavaAPI: POST /api/full-analysis (Multipart File)
     Note over JavaAPI: RestTemplate ve Timeout Koruması Devreye Girer
@@ -32,10 +32,11 @@ sequenceDiagram
     Note over PythonAI: MediaPipe ile 468 Nokta Analizi Altın Oran Hesaplama
     PythonAI-->>JavaAPI: HTTP 200 OK (Ham JSON Verisi)
     
-    par Veri İzolasyon Kayıtları (Eşzamanlı Dağıtım)
+    par MongoDB Kaydı
         JavaAPI->>MongoDB: save(FaceAnalysisResult)
+    and JDBC Log Kaydı
         JavaAPI->>H2: save(RequestLog)
     end
 
-    JavaAPI-->>Kullanıcı: HTTP 200 OK (Generic ApiResponse)
+    JavaAPI-->>Kullanıcı: HTTP 200 OK (Generic ApiResponse)  
     ```
