@@ -15,27 +15,26 @@ Bu proje, yüksek performanslı bir yüz analizi ve altın oran hesaplama sistem
 * **Api ve Koordinasyon:** Java Spring Boot mimarisiyle geliştirilmiş ana merkezdir. Süreç orkestrasyonunu, veri güvenliğini, generic yanıt yönetimini ve izole veritabanı loglamalarını üstlenir.
 * **Yapay Zeka Motoru (Mikroservis):** Python (FastAPI) tabanlı, donanım seviyesinde matris hesaplamaları yapan matematik motorudur. `MediaPipe Face Landmarker` kullanarak yüzdeki 468 koordinat noktasını ve burun eğimi gibi fizyognomik ölçümleri hesaplar.
 
-### Mimarinin Görsel Akış Şeması (Mermaid Sequence)
+### Mimarinin Görsel Akış Şeması (Mermaid Sequence Diagram)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Kullanıcı as Android Mobil GUI (Java)
-    participant JavaAPI as Java Spring Boot API
-    participant PythonAI as Python FastAPI (MediaPipe)
-    database MongoDB as NoSQL (MongoDB Atlas)
-    database H2 as JDBC (H2 Database)
+    actor Kullanıcı as 📱 Android Mobil GUI (Java)
+    participant JavaAPI as ☕ Java Spring Boot API
+    participant PythonAI as 🐍 Python FastAPI (MediaPipe)
+    participant MongoDB as 🍃 NoSQL (MongoDB Atlas)
+    database H2 as 💾 JDBC (H2 Database)
 
     Kullanıcı->>JavaAPI: POST /api/full-analysis (Multipart File)
-    Note over JavaAPI: RestTemplate ve Timeout<br/>Koruması Devreye Girer
+    Note over JavaAPI: RestTemplate ve Timeout Koruması Devreye Girer
     JavaAPI->>PythonAI: HTTP POST /analyze-face (Görsel Aktarımı)
-    Note over PythonAI: MediaPipe ile 468 Nokta Analizi<br/>Altın Oran & Eğim Hesaplama
+    Note over PythonAI: MediaPipe ile 468 Nokta Analizi Altın Oran Hesaplama
     PythonAI-->>JavaAPI: HTTP 200 OK (Ham JSON Verisi)
     
-    par Veri İzolasyon Kayıtları
-        JavaAPI->>MongoDB: save(FaceAnalysisResult) -> Ham JSON Verisi
-        JavaAPI->>H2: save(RequestLog) -> İşlem Süresi & Metrikler
+    par Veri İzolasyon Kayıtları (Eşzamanlı Dağıtım)
+        JavaAPI->>MongoDB: save(FaceAnalysisResult)
+        JavaAPI->>H2: save(RequestLog)
     end
 
-    JavaAPI-->>Kullanıcı: HTTP 200 OK (Generic ApiResponse<AnalysisResponse>)
-    Note over Kullanıcı: Verilerin Ekranda<br/>Görselleştirilmesi
+    JavaAPI-->>Kullanıcı: HTTP 200 OK (Generic ApiResponse)
